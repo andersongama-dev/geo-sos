@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">GeoSOS</string>
+    <string name="hint_main">
+        Após tocar no botão acima, uma mensagem de texto será
+        enviada para o contato de sua confiança(cadastrado no aplicativo).
+    </string>
+</resources>
