@@ -4,4 +4,6 @@
         Após tocar no botão acima, uma mensagem de texto será
         enviada para o contato de sua confiança(cadastrado no aplicativo).
     </string>
+    <string name="contact">Contato</string>
+    <string name="content_description_icon_setting">Icone de engrenagagem que representa as configurações do aplicativo</string>
 </resources>
