@@ -1,9 +1,41 @@
 <resources>
+    <!-- App -->
     <string name="app_name">GeoSOS</string>
+
+    <!-- MainActivity -->
     <string name="hint_main">
-        Após tocar no botão acima, uma mensagem de texto será
-        enviada para o contato de sua confiança(cadastrado no aplicativo).
+        Após tocar no botão acima, uma mensagem de SOS será enviada
+        para o contato de confiança cadastrado no aplicativo.
     </string>
+
     <string name="contact">Contato</string>
-    <string name="content_description_icon_setting">Icone de engrenagagem que representa as configurações do aplicativo</string>
+
+    <string name="content_description_icon_setting">
+        Botão de configurações do aplicativo
+    </string>
+
+    <string name="content_description_button_sos">
+        Botão para enviar uma mensagem de SOS ao contato salvo
+    </string>
+
+    <string name="sos">SOS</string>
+
+    <string name="people">Pessoa</string>
+
+    <!-- ConfigActivity -->
+    <string name="hint_config">
+        Cadastre uma pessoa que será avisada rapidamente
+        em caso de emergência. Ela receberá a sua mensagem e
+        localização por SMS quando o botão de pânico for acionado.
+    </string>
+
+    <string name="config">Configurações</string>
+
+    <string name="hint_contact_name">Nome do contato</string>
+
+    <string name="hit_contact_phone">Celular do contato</string>
+
+    <string name="hint_custom_msg">Mensagem personalizada</string>
+
+    <string name="save">Salvar</string>
 </resources>
