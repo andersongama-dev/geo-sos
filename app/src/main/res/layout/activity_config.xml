@@ -11,7 +11,7 @@
         android:id="@+id/linearLayoutHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#B30000"
+        android:background="@color/primary"
         android:orientation="vertical"
         android:padding="32dp"
         app:layout_constraintEnd_toEndOf="parent"
