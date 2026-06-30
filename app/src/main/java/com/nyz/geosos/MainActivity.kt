@@ -1,21 +1,23 @@
 package com.nyz.geosos
 
+import android.Manifest
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import android.Manifest
-import android.widget.Button
-import android.widget.Toast
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import android.telephony.SmsManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,7 +32,12 @@ class MainActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(
+                systemBars.left,
+                systemBars.top,
+                systemBars.right,
+                systemBars.bottom
+            )
             insets
         }
 
@@ -47,37 +54,98 @@ class MainActivity : AppCompatActivity() {
         // Botão SOS
         findViewById<Button>(R.id.buttonSos).setOnClickListener {
 
-            if (checkAndRequestPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            val phone = sharedPreferences.getString("contactPhone", "")
+
+            if (phone.isNullOrBlank()) {
+                initSetup()
+                return@setOnClickListener
+            }
+
+            if (
+                checkAndRequestPermission(Manifest.permission.ACCESS_FINE_LOCATION) &&
+                checkAndRequestPermission(Manifest.permission.SEND_SMS)
+            ) {
 
                 fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+
                     if (location != null) {
 
                         val lat = location.latitude
                         val lng = location.longitude
-                        Toast(this).setText(lat.toString())
+
+                        val customMsg = sharedPreferences.getString(
+                            "contactMsg",
+                            "SOS! Preciso de ajuda."
+                        )
+
+                        val message = """
+                        $customMsg
+                        
+                        Minha localização:
+                        https://maps.google.com/?q=$lat,$lng
+                        """.trimIndent()
+
+                        try {
+                            val smsManager = getSystemService(SmsManager::class.java)
+
+                            smsManager.sendTextMessage(
+                                phone,
+                                null,
+                                message,
+                                null,
+                                null
+                            )
+
+                            Toast.makeText(
+                                this,
+                                "SMS enviado com sucesso!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                        } catch (e: Exception) {
+                            Toast.makeText(
+                                this,
+                                "Erro ao enviar SMS: ${e.message}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "Não foi possível obter a localização.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
+        }
 
             initSetup()
         }
 
+    override fun onResume() {
+        super.onResume()
         initSetup()
     }
 
     private fun displayContactInfo() {
         val contactName = sharedPreferences.getString("contactName", "")
         val contactPhone = sharedPreferences.getString("contactPhone", "")
+
         textViewContactInfo.text = "$contactName | $contactPhone"
     }
 
     private fun initSetup() {
-        if (sharedPreferences.contains("contactPhone")) {
+        val phone = sharedPreferences.getString("contactPhone", "")
+
+        if (!phone.isNullOrBlank()) {
             displayContactInfo()
         } else {
             AlertDialog.Builder(this)
-                .setTitle("Bem vindo(a) ao Geo SOS!")
-                .setMessage("Faça a sua configuração para melhor desempenho")
+                .setTitle("Bem-vindo(a) ao Geo SOS!")
+                .setMessage("Faça a configuração inicial para utilizar o aplicativo.")
+                .setCancelable(false)
                 .setPositiveButton("Configurar agora") { _, _ ->
                     openSettingsActivity()
                 }
@@ -86,8 +154,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openSettingsActivity() {
-        val intent = Intent(this, ConfigActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, ConfigActivity::class.java))
     }
 
     private fun checkAndRequestPermission(permission: String): Boolean {

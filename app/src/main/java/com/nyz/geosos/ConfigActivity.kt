@@ -41,9 +41,9 @@ class ConfigActivity : AppCompatActivity() {
         findViewById<Button>(R.id.buttonSave).setOnClickListener {
             println("è muito massa")
             savePreferences(
-                editTextContactName.toString(),
-                editTextContactPhone.toString(),
-                editTextContactMsg.toString()
+                editTextContactName.text.toString(),
+                editTextContactPhone.text.toString(),
+                editTextContactMsg.text.toString()
             )
 
         }
